@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Electricity Bill Generator</title>
+  <style>
+    /* Add styles for an attractive form */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    input[type="text"], select, input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    input[type="button"] {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type="button"]:hover {
+      background-color: #45a049;
+    }
+    .results {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .results p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <label for="consumerNumber">Consumer Number:</label>
+    <input type="number" id="consumerNumber" required><br>
+
+    <label for="consumerName">Name:</label>
+    <input type="text" id="consumerName" maxlength="15" required><br>
+
+    <label for="consumerType">Consumer Type:</label>
+    <select id="consumerType" required>
+      <option value="Household">Household</option>
+      <option value="Industrial">Industrial</option>
+      <option value="Commercial">Commercial</option>
+    </select><br>
+
+    <label for="currentReading">Current Reading:</label>
+    <input type="number" id="currentReading" required><br>
+
+    <label for="previousReading">Previous Reading:</label>
+    <input type="number" id="previousReading" required><br>
+
+    <input type="button" value="Generate Bill" onclick="generateBill()">
+  </form>
+
+  <div class="results" id="billResults">
+    <h3>Bill Details:</h3>
+    <p id="consumerNameDisplay"></p>
+    <p id="consumerNumberDisplay"></p>
+    <p id="consumerTypeDisplay"></p>
+    <p id="unitsConsumedDisplay"></p>
+    <p id="ratePerUnitDisplay"></p>
+    <p id="currentDateDisplay"></p>
+    <p id="netBillAmountDisplay"></p>
+  </div>
+
+  <script>
+    function generateBill() {
+      // Fetch input values
+      const consumerNumber = document.getElementById('consumerNumber').value;
+      const consumerName = document.getElementById('consumerName').value;
+      const consumerType = document.getElementById('consumerType').value;
+      const currentReading = parseFloat(document.getElementById('currentReading').value);
+      const previousReading = parseFloat(document.getElementById('previousReading').value);
+
+      // Validate current reading > previous reading
+      if (currentReading <= previousReading) {
+        alert('Current reading must be greater than previous reading.');
+        return;
+      }
+
+      // Calculate units consumed
+      const unitsConsumed = currentReading - previousReading;
+
+      // Calculate rate per unit based on consumer type and units consumed
+      let ratePerUnit;
+
+      if (consumerType === "Household") {
+        if (unitsConsumed <= 100) {
+            ratePerUnit = 2;  // Low consumption
+        } else if (unitsConsumed <= 200) {
+            ratePerUnit = 3;  // Medium consumption
+        } else {
+            ratePerUnit = 4;  // High consumption
+        }
+      } else if (consumerType === "Industrial") {
+        if (unitsConsumed <= 100) {
+            ratePerUnit = 5;  // Low consumption
+        } else if (unitsConsumed <= 200) {
+            ratePerUnit = 6;  // Medium consumption
+        } else {
+            ratePerUnit = 7;  // High consumption
+        }
+      } else if (consumerType === "Commercial") {
+        if (unitsConsumed <= 100) {
+            ratePerUnit = 8;  // Low consumption
+        } else if (unitsConsumed <= 200) {
+            ratePerUnit = 9;  // Medium consumption
+        } else {
+            ratePerUnit = 10;  // High consumption
+        }
+      }
+
+      // Calculate net bill amount with 12% tax
+      const netBillAmount = unitsConsumed * ratePerUnit * 1.12;
+
+      // Display results on the same page
+      document.getElementById('consumerNameDisplay').textContent = "Consumer Name : "+consumerName;
+      document.getElementById('consumerNumberDisplay').textContent = "Consumer Number : "+consumerNumber;
+      document.getElementById('consumerTypeDisplay').textContent = "Consumer Type : "+consumerType;
+      document.getElementById('unitsConsumedDisplay').textContent = "Unit Consumed : "+unitsConsumed;
+      document.getElementById('ratePerUnitDisplay').textContent = "Rate per Unit : "+ratePerUnit;
+      document.getElementById('currentDateDisplay').textContent = "Current date : "+new Date().toLocaleDateString();
+      document.getElementById('netBillAmountDisplay').textContent = "Net Bill Amound (12% Tax included) Rs."+netBillAmount.toFixed(2);
+    }
+  </script>
+</body>
+</html>
